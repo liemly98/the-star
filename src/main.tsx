@@ -6,34 +6,24 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import LoginPage from "./pages/login.tsx";
 import ForgotPasswordPage from "./pages/forgot-password.tsx";
 import { AppProvider } from "./states/app-state/app-state";
-import { RequireAuth } from "./hoc/RequireAuth.tsx";
-import { RequireNoAuth } from "./hoc/RequireNoAuth.tsx";
+import TestPage from "./pages/test.tsx";
+import { AuthProvider } from "./states/app-state/auth-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <AppProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <RequireAuth>
-                <App />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/login"
-            element={
-              <RequireNoAuth>
-                <LoginPage />
-              </RequireNoAuth>
-            }
-          />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          {/* Add other routes here as needed */}
-        </Routes>
-      </BrowserRouter>
-    </AppProvider>
+    <AuthProvider>
+      <AppProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<App />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/test" element={<TestPage />} />
+
+            {/* Add other routes here as needed */}
+          </Routes>
+        </BrowserRouter>
+      </AppProvider>
+    </AuthProvider>
   </StrictMode>
 );

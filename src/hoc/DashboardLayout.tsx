@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useContext, type ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -14,6 +14,10 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { AuthContext } from "../states/app-state/auth-context";
+import PageLoading from "../components/page-loading";
+import { Navigate } from "react-router";
+import React from "react";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -24,6 +28,19 @@ export default function DashboardLayout({
   children,
   breadcrumbItems,
 }: DashboardLayoutProps) {
+  const state = useContext(AuthContext);
+
+  if (state.loading) {
+    return <PageLoading />;
+  }
+
+  if (!state.user) {
+    // Not logged in, redirect to login
+    return <Navigate to="/login" replace />;
+  }
+
+  // Ensure that the breadcrumbItems prop is optional
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -38,18 +55,21 @@ export default function DashboardLayout({
             <BreadcrumbList>
               {breadcrumbItems?.map((item, idx) =>
                 item.isCurrent ? (
-                  <BreadcrumbItem key={idx} className="hidden md:block">
+                  <BreadcrumbItem
+                    key={idx + item.label}
+                    className="hidden md:block"
+                  >
                     <BreadcrumbPage>{item.label}</BreadcrumbPage>
                   </BreadcrumbItem>
                 ) : (
-                  <>
-                    <BreadcrumbItem key={idx} className="hidden md:block">
+                  <React.Fragment key={idx + item.label}>
+                    <BreadcrumbItem className="hidden md:block">
                       <BreadcrumbLink href={item.href || "#"}>
                         {item.label}
                       </BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className="hidden md:block" />
-                  </>
+                  </React.Fragment>
                 )
               )}
             </BreadcrumbList>
