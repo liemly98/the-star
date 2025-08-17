@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth } from "@/lib/firebase";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { AppDispatchContext } from "../states/app-state/app-context";
 
 const firebaseErrorMessages: Record<string, string> = {
   "auth/invalid-email": "The email address is invalid.",
@@ -43,6 +44,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const dispatch = useContext(AppDispatchContext);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,8 +53,16 @@ export default function LoginPage() {
     setError("");
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      // Redirect or show success message here
-      console.log("User signed in:", result.user);
+      if (dispatch) {
+        dispatch({
+          type: "LOGIN",
+          payload: {
+            uid: result.user.uid,
+            email: result.user.email,
+          },
+        });
+      }
+      navigate("/");
     } catch (err) {
       if (typeof err === "object" && err && "code" in err) {
         console.log(JSON.stringify(err, null, 2));
