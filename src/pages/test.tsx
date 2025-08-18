@@ -1,4 +1,3 @@
-import React from "react";
 import PageLoading from "../components/page-loading";
 
 function TestPage() {

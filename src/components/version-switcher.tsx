@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Check, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
 
 import {
