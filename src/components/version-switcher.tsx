@@ -12,15 +12,34 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useNavigate } from "react-router";
+import {
+  AppDispatchContext,
+  AppStateContext,
+} from "../states/app-state/app-context";
+import { useContext } from "react";
 
 export function VersionSwitcher({
   versions,
-  defaultVersion,
 }: {
-  versions: string[];
-  defaultVersion: string;
+  versions: {
+    title: string;
+    url: string;
+  }[];
 }) {
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion);
+  const navigate = useNavigate();
+  const state = useContext(AppStateContext);
+  const selectedVersion = state?.selectedVersion;
+  const dispatch = useContext(AppDispatchContext);
+  const handleSelectVersion = (version: { title: string; url: string }) => {
+    if (dispatch) {
+      dispatch({ type: "SET_VERSION", payload: version.title });
+    }
+    localStorage.setItem("selectedVersion", version.title);
+    navigate(version.url);
+
+    // Add any additional logic needed when a version is selected
+  };
 
   return (
     <SidebarMenu>
@@ -35,8 +54,8 @@ export function VersionSwitcher({
                 <GalleryVerticalEnd className="size-4" />
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-medium">Documentation</span>
-                <span className="">v{selectedVersion}</span>
+                <span className="font-medium">The Star</span>
+                <span className="">{selectedVersion}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -47,11 +66,13 @@ export function VersionSwitcher({
           >
             {versions.map((version) => (
               <DropdownMenuItem
-                key={version}
-                onSelect={() => setSelectedVersion(version)}
+                key={version.title}
+                onSelect={() => handleSelectVersion(version)}
               >
-                v{version}{" "}
-                {version === selectedVersion && <Check className="ml-auto" />}
+                {version.title}{" "}
+                {version.title === selectedVersion && (
+                  <Check className="ml-auto" />
+                )}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

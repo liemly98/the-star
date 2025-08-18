@@ -11,6 +11,8 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import FullPageLayout from "../hoc/FullPageLayout";
+import { Link } from "react-router";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -47,7 +49,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <FullPageLayout>
       <div className="flex w-full max-w-sm flex-col gap-6">
         <Card>
           <CardHeader className="text-center">
@@ -85,15 +87,15 @@ export default function ForgotPasswordPage() {
               </Button>
             </form>
             <div className="mt-4 text-center">
-              <a href="/login">
+              <Link to="/login">
                 <Button type="button" variant="outline" className="w-full mt-2">
                   Go back to login
                 </Button>
-              </a>
+              </Link>
             </div>
           </CardContent>
         </Card>
       </div>
-    </div>
+    </FullPageLayout>
   );
 }

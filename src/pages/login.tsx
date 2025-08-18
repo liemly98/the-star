@@ -15,6 +15,7 @@ import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Link, useNavigate } from "react-router";
 import { AppDispatchContext } from "../states/app-state/app-context";
+import FullPageLayout from "../hoc/FullPageLayout";
 
 const firebaseErrorMessages: Record<string, string> = {
   "auth/invalid-email": "The email address is invalid.",
@@ -77,7 +78,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+    <FullPageLayout>
       <div className="flex w-full max-w-sm flex-col gap-6">
         <a href="#" className="flex items-center gap-2 self-center font-medium">
           <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md">
@@ -148,6 +149,6 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-    </div>
+    </FullPageLayout>
   );
 }
