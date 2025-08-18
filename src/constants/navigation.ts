@@ -23,11 +23,6 @@ export const GENERAL_NAV = [
         title: "Dashboard",
         url: "/",
       },
-
-      {
-        title: "Test",
-        url: "/personal",
-      },
     ],
   },
 ];

@@ -10,6 +10,7 @@ import { AuthProvider } from "./states/app-state/auth-provider.tsx";
 import { generalRoutes } from "./pages/general/routes.tsx";
 import { workRoutes } from "./pages/work/routes.tsx";
 import { personalPages } from "./pages/personal/routes.tsx";
+import MyAccountPage from "./pages/my-account.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -20,6 +21,7 @@ createRoot(document.getElementById("root")!).render(
             <Route path="/login" element={<LoginPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/test" element={<TestPage />} />
+            <Route path="/my-account" element={<MyAccountPage />} />
 
             {generalRoutes.map((route, idx) => (
               <Route key={idx} path="">

@@ -8,6 +8,14 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -16,8 +24,13 @@ import {
 } from "@/components/ui/sidebar";
 import { AuthContext } from "../states/app-state/auth-context";
 import PageLoading from "../components/page-loading";
-import { Navigate } from "react-router";
+import { Link, Navigate } from "react-router";
 import React from "react";
+import { Button } from "../components/ui/button";
+import { UserCircle } from "lucide-react";
+import { signOut } from "firebase/auth";
+import { auth } from "../lib/firebase";
+import { AppDispatchContext } from "../states/app-state/app-context";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -29,6 +42,7 @@ export default function DashboardLayout({
   breadcrumbItems,
 }: DashboardLayoutProps) {
   const state = useContext(AuthContext);
+  const dispatch = useContext(AppDispatchContext);
 
   if (state.loading) {
     return <PageLoading />;
@@ -38,6 +52,22 @@ export default function DashboardLayout({
     // Not logged in, redirect to login
     return <Navigate to="/login" replace />;
   }
+
+  const handleLogout = async () => {
+    try {
+      const result = await signOut(auth);
+      console.log("🚀 ~ handleLogout ~ result:", result);
+      if (dispatch) {
+        dispatch({ type: "LOGOUT" });
+      }
+      // navigate("/login");
+      // Optionally, clear any app state or context here
+      // window.location.href = "/login"; // or use navigate("/login") if using react-router
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Optionally, show an error message to the user
+    }
+  };
 
   // Ensure that the breadcrumbItems prop is optional
 
@@ -51,7 +81,7 @@ export default function DashboardLayout({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
+          <Breadcrumb className="flex-grow">
             <BreadcrumbList>
               {breadcrumbItems?.map((item, idx) =>
                 item.isCurrent ? (
@@ -74,6 +104,24 @@ export default function DashboardLayout({
               )}
             </BreadcrumbList>
           </Breadcrumb>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size={"icon"} className="ml-auto">
+                <UserCircle className="size-6 text-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link to="/my-account">My Account</Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
