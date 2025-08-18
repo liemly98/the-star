@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
-import { AuthContext } from "../states/app-state/auth-context";
+import React from "react";
 import PageLoading from "../components/page-loading";
 import { Navigate } from "react-router";
+import { useAuthState } from "../states/auth-state/use-auth-state";
 
 function FullPageLayout({ children }: { children: React.ReactNode }) {
-  const state = useContext(AuthContext);
+  const { state } = useAuthState();
 
   if (state.loading) {
     return <PageLoading />;

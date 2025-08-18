@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { GalleryVerticalEnd } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,8 @@ import { Label } from "@/components/ui/label";
 import { signInWithEmailAndPassword, type AuthError } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { Link, useNavigate } from "react-router";
-import { AppDispatchContext } from "../states/app-state/app-context";
 import FullPageLayout from "../hoc/FullPageLayout";
+import { useAuthState } from "../states/auth-state/use-auth-state";
 
 const firebaseErrorMessages: Record<string, string> = {
   "auth/invalid-email": "The email address is invalid.",
@@ -45,7 +45,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const dispatch = useContext(AppDispatchContext);
+  const { userLogin } = useAuthState();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,15 +54,11 @@ export default function LoginPage() {
     setError("");
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      if (dispatch) {
-        dispatch({
-          type: "LOGIN",
-          payload: {
-            uid: result.user.uid,
-            email: result.user.email,
-          },
-        });
-      }
+      const idToken = await result.user.getIdToken();
+      userLogin({
+        idToken: idToken,
+        user: result.user,
+      });
       navigate("/");
     } catch (err) {
       if (typeof err === "object" && err && "code" in err) {

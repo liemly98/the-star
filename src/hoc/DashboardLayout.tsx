@@ -1,4 +1,4 @@
-import { useContext, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -22,7 +22,6 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { AuthContext } from "../states/app-state/auth-context";
 import PageLoading from "../components/page-loading";
 import { Link, Navigate } from "react-router";
 import React from "react";
@@ -30,7 +29,7 @@ import { Button } from "../components/ui/button";
 import { UserCircle } from "lucide-react";
 import { signOut } from "firebase/auth";
 import { auth } from "../lib/firebase";
-import { AppDispatchContext } from "../states/app-state/app-context";
+import { useAuthState } from "../states/auth-state/use-auth-state";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -41,8 +40,7 @@ export default function DashboardLayout({
   children,
   breadcrumbItems,
 }: DashboardLayoutProps) {
-  const state = useContext(AuthContext);
-  const dispatch = useContext(AppDispatchContext);
+  const { state, userLogout } = useAuthState();
 
   if (state.loading) {
     return <PageLoading />;
@@ -57,9 +55,7 @@ export default function DashboardLayout({
     try {
       const result = await signOut(auth);
       console.log("🚀 ~ handleLogout ~ result:", result);
-      if (dispatch) {
-        dispatch({ type: "LOGOUT" });
-      }
+      userLogout();
       // navigate("/login");
       // Optionally, clear any app state or context here
       // window.location.href = "/login"; // or use navigate("/login") if using react-router

@@ -4,13 +4,13 @@ import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router";
 import LoginPage from "./pages/login.tsx";
 import ForgotPasswordPage from "./pages/forgot-password.tsx";
-import { AppProvider } from "./states/app-state/app-state";
 import TestPage from "./pages/test.tsx";
-import { AuthProvider } from "./states/app-state/auth-provider.tsx";
 import { generalRoutes } from "./pages/general/routes.tsx";
 import { workRoutes } from "./pages/work/routes.tsx";
 import { personalPages } from "./pages/personal/routes.tsx";
 import MyAccountPage from "./pages/my-account.tsx";
+import { AppProvider } from "./states/app-state/context.tsx";
+import { AuthProvider } from "./states/auth-state/context.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

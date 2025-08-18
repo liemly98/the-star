@@ -12,11 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useNavigate } from "react-router";
-import {
-  AppDispatchContext,
-  AppStateContext,
-} from "../states/app-state/app-context";
-import { useContext } from "react";
+import { useAppState } from "../states/app-state/use-app-state";
 
 export function VersionSwitcher({
   versions,
@@ -27,13 +23,9 @@ export function VersionSwitcher({
   }[];
 }) {
   const navigate = useNavigate();
-  const state = useContext(AppStateContext);
-  const selectedVersion = state?.selectedVersion;
-  const dispatch = useContext(AppDispatchContext);
+  const { selectedVersion, setSelectedVersion } = useAppState();
   const handleSelectVersion = (version: { title: string; url: string }) => {
-    if (dispatch) {
-      dispatch({ type: "SET_VERSION", payload: version.title });
-    }
+    setSelectedVersion(version.title);
     localStorage.setItem("selectedVersion", version.title);
     navigate(version.url);
 

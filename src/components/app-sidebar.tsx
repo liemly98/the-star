@@ -14,11 +14,11 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NAV_MAPPINGS, NAV_VERSIONS } from "../constants/navigation";
-import { AppStateContext } from "../states/app-state/app-context";
 import { Link, useLocation } from "react-router";
+import { useAppState } from "../states/app-state/use-app-state";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const state = React.useContext(AppStateContext);
+  const { state } = useAppState();
   const selectedVersion = (state?.selectedVersion ||
     "") as keyof typeof NAV_MAPPINGS;
 
